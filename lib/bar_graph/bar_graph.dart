@@ -17,23 +17,86 @@ class MyBarGraph extends StatelessWidget {
       satAmount: weeklySummary[6],
     );
     myBarData.initializeBarData();
+
     return BarChart(
       BarChartData(
         maxY: 100,
         minY: 0,
-        barGroups: myBarData.barData
-            .map(
-              (data) => BarChartGroupData(
-                x: data.x,
-                barRods: [
-                  BarChartRodData(
-                    toY: data.y,
-                  ),
-                ],
+        gridData: FlGridData(show: false),
+        titlesData: FlTitlesData(
+          show: true,
+          topTitles: AxisTitles(
+            sideTitles: SideTitles(showTitles: false),
+          ),
+          rightTitles: AxisTitles(
+            sideTitles: SideTitles(showTitles: false),
+          ),
+          leftTitles: AxisTitles(
+            sideTitles: SideTitles(showTitles: false),
+          ),
+          bottomTitles: AxisTitles(
+            sideTitles:
+                SideTitles(showTitles: true, getTitlesWidget: getBottomTitles),
+          ),
+        ),
+        barGroups: myBarData.barData.map((data) {
+          bool isGreater = false;
+          if (data.y > 10) {
+            isGreater = !isGreater;
+          }
+          return BarChartGroupData(
+            x: data.x,
+            barRods: [
+              BarChartRodData(
+                toY: data.y,
+                width: 25,
+                backDrawRodData: BackgroundBarChartRodData(
+                  show: true,
+                  toY: 100,
+                  color: Colors.white70,
+                ),
+                borderRadius: BorderRadius.circular(5),
+                color: isGreater ? Colors.red : Colors.green,
               ),
-            )
-            .toList(),
+            ],
+          );
+        }).toList(),
       ),
     );
   }
+}
+
+Widget getBottomTitles(double value, TitleMeta meta) {
+  const txtStyle = TextStyle(
+    color: Colors.grey,
+    fontSize: 14,
+    fontWeight: FontWeight.bold,
+  );
+  Widget text;
+  switch (value.toInt()) {
+    case 1:
+      text = Text("S", style: txtStyle);
+      break;
+    case 2:
+      text = Text("M", style: txtStyle);
+      break;
+    case 3:
+      text = Text("T", style: txtStyle);
+      break;
+    case 4:
+      text = Text("W", style: txtStyle);
+      break;
+    case 5:
+      text = Text("T", style: txtStyle);
+      break;
+    case 6:
+      text = Text("F", style: txtStyle);
+      break;
+    case 7:
+      text = Text("S", style: txtStyle);
+      break;
+    default:
+      text = Text("");
+  }
+  return text;
 }
